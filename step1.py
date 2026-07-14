@@ -5,24 +5,23 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()  # this reads your .env file
-api_key = os.getenv("ANTHROPIC_API_KEY")
+api_key = os.getenv("OPENAI_API_KEY")
 
 def ask_ai(question):
     response = requests.post(
-        "https://api.anthropic.com/v1/messages",
+        "https://api.openai.com/v1/chat/completions",
         headers={
-            "x-api-key": api_key,
-            "anthropic-version": "2023-06-01",
-            "content-type": "application/json",
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
         },
         json={
-            "model": "claude-sonnet-4-6",
+            "model": "gpt-4o-mini",
             "max_tokens": 300,
             "messages": [{"role": "user", "content": question}],
         },
     )
     data = response.json()
-    return data["content"][0]["text"]
+    return data["choices"][0]["message"]["content"]
 
 question = input("Ask me anything: ")
 answer = ask_ai(question)
